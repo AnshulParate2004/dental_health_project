@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Health Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Teeth Photo</h1>
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" name="file" id="file-input" accept="image/*" required>
+            <button type="submit">Analyze</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+   <!-- In index.html, update the script -->
+<script>
+    document.getElementById('upload-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        document.getElementById('result').innerText = data.result || data.error;
+        if (data.message) {
+            document.getElementById('result').innerHTML += `<br><img src="/static/uploads/${formData.get('file').name}" width="200">`;
+        }
+    });
+</script>
+</body>
+</html>
